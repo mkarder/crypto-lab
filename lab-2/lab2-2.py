@@ -2,7 +2,7 @@ from microbit import *
 import radio
 
 # Constants
-GROUP_NUMBER = 1
+GROUP_NUMBER = 1 #TODO: Change group number to your group
 GLOBAL_KEY = b'chacha20!'
 MESSAGE_1 = "Hello World"
 MESSAGE_2 = "Goodbye World"
@@ -80,6 +80,9 @@ def main():
     elif mode ==  2:
         receive_mode()
         
+
+
+# --------------------------------------------- 
 
 # CHACHA20 Module
 """ Retrieved from: https://github.com/pts/chacha20/tree/master"""

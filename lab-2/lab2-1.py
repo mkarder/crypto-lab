@@ -2,7 +2,7 @@ from microbit import *
 import radio
 
 # Constants
-GROUP_NUMBER = 1
+GROUP_NUMBER = 1 #TODO: Change group number to your group
 
 def select_mode():
     display.scroll('Press A button for Sender | Press B button For Reciever\n', 
@@ -42,17 +42,7 @@ def receive_mode():
             display.scroll(received_msg,
                           delay=50
                           )    
-
-def send_data(msg):
-    radio.send(msg)
-
-def on_receive():
-    received_msg = radio.receive()
-    if received_msg:
-        display.scroll(received_msg,
-                      delay=50
-                      )
-
+            
 def main():
     radio.config(group=GROUP_NUMBER)
     radio.on()
