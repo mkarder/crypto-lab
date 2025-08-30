@@ -4,8 +4,8 @@ import radio
 # Constants
 GROUP_NUMBER = 1
 GLOBAL_KEY = b'chacha20!'
-MESSAGE_1 = "Hello World"
-MESSAGE_2 = "Goodbye World"
+MESSAGE_1 = "Hello World"   # Change these if you like!
+MESSAGE_2 = "Goodbye World" # Change these if you like!
 
 def select_mode():
     display.scroll('Press A button for Sender | Press B button For Reciever\n', 

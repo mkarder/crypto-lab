@@ -138,7 +138,8 @@ def perform_dhke_as_receiver():
             timeout += 1
         
         if sender_public_key is None:
-            
+            return False
+
         # Step 4: Send public key
         
         # Step 5: Calculate shared secret
@@ -182,7 +183,7 @@ def calculate_shared_secret(private_key, other_public_key):
     Hint: Take a look at how we calculated the public key. 
     Is there anything we can use from that function?
     """
-    return 
+    return # Something is missing here...
 
 def derive_key_from_shared_secret(secret):
     """
@@ -285,7 +286,7 @@ def verify_mac(key, message, mac):
     return simple_hash(key + message) == mac
 
 # ---
-# CHACHA20 Module (from previous parts)
+# CHACHA20 Module (from part 2 and 3)
 # ---
 import struct
 
