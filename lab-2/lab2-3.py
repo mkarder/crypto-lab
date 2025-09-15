@@ -55,10 +55,7 @@ def on_send(msg):
     message to bytes, encrypts the bytes using chacha20_encrypt()
     and then sends the encrypted bytes over the radio.
     """
-    mac = generate_mac(GLOBAL_KEY.decode('utf-8'), msg)
-    encrypted_bytes = chacha20_encrypt(msg.encode('utf-8'), GLOBAL_KEY)
-    data = mac + encrypted_bytes 
-    radio.send_bytes(data)
+    pass # Remove this line and implement your solution here
     
 def on_receive(received_bytes):
     try:
@@ -128,7 +125,7 @@ def generate_mac(key, message):
     TODO:
     Implement a function to create a message authentication code (MAC) using the provided key and message.
     """
-    return simple_hash(key+message)
+    pass # Remove this line and implement your solution here
 
 def verify_mac(key, message, mac):
     """
@@ -136,7 +133,7 @@ def verify_mac(key, message, mac):
     Implement a function to verify a message authentication code (MAC) using the provided key, message, and MAC.
     This function should return True if the MAC is valid, and False otherwise.
     """
-    return simple_hash(key+message) == mac
+    pass # Remove this line and implement your solution here
 
 # ---
 # CHACHA20 Module
