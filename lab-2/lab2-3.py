@@ -2,7 +2,7 @@ from microbit import *
 import radio
 
 # Constants
-GROUP_NUMBER = 1
+GROUP_NUMBER = 1 #TODO: Change group number to your group
 GLOBAL_KEY = b'chacha20!'
 MESSAGE_1 = "Hello World"
 MESSAGE_2 = "Goodbye World"
@@ -92,12 +92,12 @@ def main():
     elif mode ==  2:
         receive_mode()
 
-# ---
-# MAC
-# ---
+# --------------------------------------------- 
+
+# MAC (Message Authentication Code)
 """
 TODO: 
-Implement your own MAC functinolaity here.
+Implement your own MAC functinality here.
 Use the provided 'simple_hash()' function to generate your hash
 and then make sure this hash is prepended to the bytes sent 
 in the 'on_send()' function.  
@@ -135,9 +135,9 @@ def verify_mac(key, message, mac):
     """
     pass # Remove this line and implement your solution here
 
-# ---
+# --------------------------------------------- 
+
 # CHACHA20 Module
-# ---
 """ Retrieved from: https://github.com/pts/chacha20/tree/master"""
 import struct
 
