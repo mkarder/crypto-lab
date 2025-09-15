@@ -41,7 +41,7 @@ def receive_mode():
                   )
 
     while True:
-        received_msg = radio.receive()
+        received_msg = radio.receive_bytes()
         if received_msg:
             data = on_receive(received_msg)
             display.scroll(data,
