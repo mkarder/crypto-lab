@@ -121,7 +121,7 @@ p = 97
 
 def initialize_send_mode():
     """
-    TASK 4: Fix DHKE sender protocol
+    TASK: Fix DHKE sender protocol
     TODO:
     1. Generate random private key 'a' (integer from 1 to p-1)
     2. Calculate public key A = g^a mod p using generate_A()
@@ -133,8 +133,8 @@ def initialize_send_mode():
     global GLOBAL_KEY
     
     # TODO: Fix random number generation 
-    a = int(random() * (p-1)) + 1
-    A = generate_A(a, g, p)
+    a = int(random() * (p-1)) + 1 # generate the private share "a" random integer from 1 to p-1
+    A = generate_A(a, g, p) # generate the public share A using the private a, g and p
     
     display.scroll("DHKE SEND")
     display.scroll("A=" + str(A))
@@ -143,7 +143,7 @@ def initialize_send_mode():
     max_attempts = 20
     
     while GLOBAL_KEY is None and attempts < max_attempts:
-        # TODO: Send A as string via radio
+        # Send A as string via radio using UTF-8 encoding
         radio.send_bytes(str(A).encode('utf-8'))  
         
         sleep(5000)  # Wait 5 seconds
@@ -155,7 +155,7 @@ def initialize_send_mode():
                 # TODO: Parse B as integer
                 B = int(received_msg)  
                 
-                # TODO: Calculate shared secret K = B^a mod p
+                # TODO: Calculate shared secret K
                 K = generate_K(B, a, p)
                 GLOBAL_KEY = K
                 
@@ -174,9 +174,9 @@ def initialize_send_mode():
     else:
         display.scroll("KEY FAIL!")
 
-def initialize_receive_mode():  # Fixed typo in function name
+def initialize_receive_mode(): 
     """
-    TASK 4: Fix DHKE receiver protocol  
+    TASK: Fix DHKE receiver protocol  
     TODO:
     1. Generate random private key 'b' (integer from 1 to p-1)
     2. Wait for A from sender
@@ -196,24 +196,24 @@ def initialize_receive_mode():  # Fixed typo in function name
     max_attempts = 30
     
     while GLOBAL_KEY is None and attempts < max_attempts:
-        # TODO: Wait for A from sender
+        # Wait for A from sender
         received_msg = radio.receive()
         if received_msg:
             try:
-                # TODO: Parse A as integer
+                # Parse A as integer
                 A = int(received_msg)
                 
                 display.scroll("A=" + str(A))
                 
                 # TODO: Generate public key B
-                B = generate_B(b, g, p)
+                B = generate_B(b, g, p) # generate the public share B using the private b, g and p
                 display.scroll("B=" + str(B))
                 
-                # TODO: Send B to sender as string
+                # Send B to sender as string
                 radio.send(str(B)) 
                 
-                # TODO: Calculate shared secret K = A^b mod p  
-                K = generate_K(A, b, p)
+                # TODO: Calculate shared secret K 
+                K = generate_K(A, b, p) # generate the public share K using A, b and p
                 GLOBAL_KEY = K
                 
                 display.scroll("K=" + str(K))
