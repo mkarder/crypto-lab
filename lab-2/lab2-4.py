@@ -1,9 +1,10 @@
 from microbit import *
 import radio
+from random import random
 
 # Constants
 GROUP_NUMBER = 1 #TODO: Change group number to your group
-GLOBAL_KEY = b'chacha20!'
+GLOBAL_KEY = None
 MESSAGE_1 = "Hello World"
 MESSAGE_2 = "Goodbye World"
 
@@ -87,10 +88,162 @@ def main():
     mode = select_mode()
     
     if mode == 1:
-        send_mode()
+        initialize_send_mode()
 
     elif mode ==  2:
+        initialize_receive_mode()
+
+# --------------------------------------------- 
+
+# DHKE (Diffie-Hellman Key Exchange)
+"""
+TASK 4: Fix DHKE protocol
+TODO: 
+Implement your own DHKE functinality here.
+We have begun generating code for the sender and receiver, but need some help finishing it. 
+As of now it does the following:
+    SENDER:
+    1. Calls generate_A() when a micro:bit is started in send_mode.
+    2. Sends its ephemeral value A to the receiver and waits for a reply.
+    3. When a reply with the value of B is received, it calculates the shared key K
+    4. Sets K as global key
+    5. When the key is set, it is ready to send encrypted messages
+
+    RECEIVER:
+    1. When started in receive_mode, it waits for a initial value A.
+    2. When A is received, it generates a value B and sends it back to the sender.
+    3. It will then calculate the shared key K and set it as the global key.
+    4. When the key is set, it is ready to receive encrypted messages.
+"""
+# Constants for DHKE
+g = 5
+p = 97
+
+def initialize_send_mode():
+    """
+    TASK: Fix DHKE sender protocol
+    TODO:
+    1. Generate random private key 'a' (integer from 1 to p-1)
+    2. Calculate public key A = g^a mod p using generate_A()
+    3. Send A to receiver as string
+    4. Wait for B from receiver
+    5. Calculate shared secret using generate_and_set_K()
+    6. Set GLOBAL_KEY and start send_mode()
+    """
+    global GLOBAL_KEY
+    
+    # TODO: Fix random number generation 
+    a = int(random() * (p-1)) + 1 # generate the private share "a" random integer from 1 to p-1
+    A = generate_A(a, g, p) # generate the public share A using the private a, g and p
+    
+    display.scroll("DHKE SEND")
+    display.scroll("A=" + str(A))
+    
+    attempts = 0
+    max_attempts = 20
+    
+    while GLOBAL_KEY is None and attempts < max_attempts:
+        # Send A as string via radio using UTF-8 encoding
+        radio.send_bytes(str(A).encode('utf-8'))  
+        
+        sleep(5000)  # Wait 5 seconds
+        
+        # TODO: Wait for B from receiver
+        received_msg = radio.receive()
+        if received_msg:
+            try:
+                # TODO: Parse B as integer
+                B = int(received_msg)  
+                
+                # TODO: Calculate shared secret K
+                K = generate_K(B, a, p)
+                GLOBAL_KEY = K
+                
+                display.scroll("K=" + str(K))
+                display.show(Image.YES)
+                break
+            except:
+                # Invalid message, continue trying
+                pass
+        
+        attempts += 1
+    
+    if GLOBAL_KEY is not None:
+        display.scroll("KEY OK!")
+        send_mode()
+    else:
+        display.scroll("KEY FAIL!")
+
+def initialize_receive_mode(): 
+    """
+    TASK: Fix DHKE receiver protocol  
+    TODO:
+    1. Generate random private key 'b' (integer from 1 to p-1)
+    2. Wait for A from sender
+    3. Calculate public key B = g^b mod p using generate_B()
+    4. Send B to sender as string
+    5. Calculate shared secret using generate_and_set_K()
+    6. Set GLOBAL_KEY and start receive_mode()
+    """
+    global GLOBAL_KEY
+    
+    # TODO: Fix random number generation
+    b = int(random() * (p-1)) + 1
+    
+    display.scroll("DHKE RECV")
+    
+    attempts = 0
+    max_attempts = 30
+    
+    while GLOBAL_KEY is None and attempts < max_attempts:
+        # Wait for A from sender
+        received_msg = radio.receive()
+        if received_msg:
+            try:
+                # Parse A as integer
+                A = int(received_msg)
+                
+                display.scroll("A=" + str(A))
+                
+                # TODO: Generate public key B
+                B = generate_B(b, g, p) # generate the public share B using the private b, g and p
+                display.scroll("B=" + str(B))
+                
+                # Send B to sender as string
+                radio.send(str(B)) 
+                
+                # TODO: Calculate shared secret K 
+                K = generate_K(A, b, p) # generate the public share K using A, b and p
+                GLOBAL_KEY = K
+                
+                display.scroll("K=" + str(K))
+                display.show(Image.YES)
+                break
+            except:
+                # Invalid message, continue waiting
+                pass
+        
+        sleep(500)  # Check every 0.5 seconds
+        attempts += 1
+    
+    if GLOBAL_KEY is not None:
+        display.scroll("KEY OK!")
         receive_mode()
+    else:
+        display.scroll("KEY FAIL!")
+
+def generate_A(a, g, p):
+    """Generate public key A = g^a mod p"""
+    return g**a % p 
+
+def generate_B(b, g, p):
+    """Generate public key B = g^b mod p"""
+    return g**b % p
+
+def generate_K(X, y, p):
+    """Generate shared secret K = X^y mod p"""
+    return X**y % p
+
 
 # --------------------------------------------- 
 
