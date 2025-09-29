@@ -138,7 +138,9 @@ def initialize_send_mode():
                 
                 # TODO: Calculate shared secret K
                 K = generate_K(B, a, p)
-                GLOBAL_KEY = K
+
+
+                GLOBAL_KEY = str(K).encode('utf-8') # The key has to be of type bytes, encoded using utf-8
                 
                 display.scroll("K=" + str(K))
                 display.show(Image.YES)
@@ -195,7 +197,8 @@ def initialize_receive_mode():
                 
                 # TODO: Calculate shared secret K
                 K = 0 # generate the public share K using A, b and p
-                GLOBAL_KEY = K
+
+                GLOBAL_KEY = str(K).encode('utf-8') # The key has to be of type bytes, encoded using utf-8
                 
                 display.scroll("K=" + str(K))
                 display.show(Image.YES)
