@@ -254,8 +254,9 @@ def simple_hash(input_string):
         hash_value += ord(char)  # Add the ASCII value of each character
 
     hash = hash_value % table_size  # Apply modulo to fit within table_size
-    print(hash)
-    return hash.to_bytes(2, byteorder='big')  # Return the final hash value
+    byte1 = (hash >> 8) & 0xFF  # High byte (bits 15-8)
+    byte2 = hash & 0xFF         # Low byte (bits 7-0)
+    return bytes([byte1, byte2])  # Return the final hash value
 
 def generate_mac(key, message):
     """
