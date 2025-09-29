@@ -96,25 +96,6 @@ def main():
 # --------------------------------------------- 
 
 # DHKE (Diffie-Hellman Key Exchange)
-"""
-TASK 4: Fix DHKE protocol
-TODO: 
-Implement your own DHKE functinality here.
-We have begun generating code for the sender and receiver, but need some help finishing it. 
-As of now it does the following:
-    SENDER:
-    1. Calls generate_A() when a micro:bit is started in send_mode.
-    2. Sends its ephemeral value A to the receiver and waits for a reply.
-    3. When a reply with the value of B is received, it calculates the shared key K
-    4. Sets K as global key
-    5. When the key is set, it is ready to send encrypted messages
-
-    RECEIVER:
-    1. When started in receive_mode, it waits for a initial value A.
-    2. When A is received, it generates a value B and sends it back to the sender.
-    3. It will then calculate the shared key K and set it as the global key.
-    4. When the key is set, it is ready to receive encrypted messages.
-"""
 # Constants for DHKE
 g = 5
 p = 97
@@ -157,7 +138,9 @@ def initialize_send_mode():
                 
                 # TODO: Calculate shared secret K
                 K = generate_K(B, a, p)
-                GLOBAL_KEY = K
+
+
+                GLOBAL_KEY = str(K).encode('utf-8') # The key has to be of type bytes, encoded using utf-8
                 
                 display.scroll("K=" + str(K))
                 display.show(Image.YES)
@@ -206,15 +189,16 @@ def initialize_receive_mode():
                 display.scroll("A=" + str(A))
                 
                 # TODO: Generate public key B
-                B = generate_B(b, g, p) # generate the public share B using the private b, g and p
+                B = 0 # generate the public share B using the private b, g and p
                 display.scroll("B=" + str(B))
                 
                 # Send B to sender as string
                 radio.send(str(B)) 
                 
-                # TODO: Calculate shared secret K 
-                K = generate_K(A, b, p) # generate the public share K using A, b and p
-                GLOBAL_KEY = K
+                # TODO: Calculate shared secret K
+                K = 0 # generate the public share K using A, b and p
+
+                GLOBAL_KEY = str(K).encode('utf-8') # The key has to be of type bytes, encoded using utf-8
                 
                 display.scroll("K=" + str(K))
                 display.show(Image.YES)
@@ -233,16 +217,19 @@ def initialize_receive_mode():
         display.scroll("KEY FAIL!")
 
 def generate_A(a, g, p):
-    """Generate public key A = g^a mod p"""
-    return g**a % p 
+    # TODO: Generate A
+    A = 0 # A = g^a mod p
+    return A
 
 def generate_B(b, g, p):
-    """Generate public key B = g^b mod p"""
-    return g**b % p
+    # TODO: Generate B
+    B = 0 # B = g^b mod p
+    return B
 
 def generate_K(X, y, p):
-    """Generate shared secret K = X^y mod p"""
-    return X**y % p
+    # TODO: Generate X
+    K = 0 # K = X^y mod p
+    return K
 
 
 # --------------------------------------------- 
@@ -270,8 +257,9 @@ def simple_hash(input_string):
         hash_value += ord(char)  # Add the ASCII value of each character
 
     hash = hash_value % table_size  # Apply modulo to fit within table_size
-    print(hash)
-    return hash.to_bytes(2, byteorder='big')  # Return the final hash value
+    byte1 = (hash >> 8) & 0xFF  # High byte (bits 15-8)
+    byte2 = hash & 0xFF         # Low byte (bits 7-0)
+    return bytes([byte1, byte2])  # Return the final hash value
 
 def generate_mac(key, message):
     """
